@@ -19,15 +19,24 @@ class PlacesListScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer<GreatPlaces>(
-        builder: (ctx, greatPlaces, child) => greatPlaces.places.isEmpty ? child : ListView.builder(itemCount: greatPlaces.places.length, itemBuilder: (ctx, index) => ListTile(
-          leading: CircleAvatar(backgroundImage: FileImage(greatPlaces.places[index].image),),
-          title: Text(greatPlaces.places[index].title),
-          onTap: () {
-            Navigator.of(context).pushNamed(PlaceDetailScreen.routeName);
-          },
-        ),),
-        child: Text('No places yet', textAlign: TextAlign.center,),
+      body: FutureBuilder(
+        future: Provider.of<GreatPlaces>(context, listen: false).fetchAndSetPlaces(),
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator(),);
+          } else {
+            return Consumer<GreatPlaces>(
+              builder: (ctx, greatPlaces, child) => greatPlaces.places.isEmpty ? child : ListView.builder(itemCount: greatPlaces.places.length, itemBuilder: (ctx, index) => ListTile(
+                leading: CircleAvatar(backgroundImage: FileImage(greatPlaces.places[index].image),),
+                title: Text(greatPlaces.places[index].title),
+                onTap: () {
+                  Navigator.of(context).pushNamed(PlaceDetailScreen.routeName);
+                },
+              ),),
+              child: Text('No places yet', textAlign: TextAlign.center,),
+            );
+          }
+        },
       ),
     );
   }
