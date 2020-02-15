@@ -27,13 +27,14 @@ class PlacesListScreen extends StatelessWidget {
           } else {
             return Consumer<GreatPlaces>(
               builder: (ctx, greatPlaces, child) => greatPlaces.places.isEmpty ? child : ListView.builder(itemCount: greatPlaces.places.length, itemBuilder: (ctx, index) => ListTile(
-                leading: CircleAvatar(backgroundImage: FileImage(greatPlaces.places[index].image),),
+                leading: Hero(tag: greatPlaces.places[index].id, child: CircleAvatar(backgroundImage: FileImage(greatPlaces.places[index].image),),),
                 title: Text(greatPlaces.places[index].title),
+                subtitle: Text(greatPlaces.places[index].location.address),
                 onTap: () {
-                  Navigator.of(context).pushNamed(PlaceDetailScreen.routeName);
+                  Navigator.of(context).pushNamed(PlaceDetailScreen.routeName, arguments: index);
                 },
               ),),
-              child: Text('No places yet', textAlign: TextAlign.center,),
+              child: Center(child: Text('No places yet', textAlign: TextAlign.center,)),
             );
           }
         },
